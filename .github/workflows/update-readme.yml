@@ -1,0 +1,39 @@
+name: Update README with Problem Counts
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Count problem files
+        id: count
+        run: |
+          easy_count=$(ls -1 Easy | wc -l || echo 0)
+          medium_count=$(ls -1 Medium | wc -l || echo 0)
+          hard_count=$(ls -1 Hard | wc -l || echo 0)
+          echo "::set-output name=easy::$easy_count"
+          echo "::set-output name=medium::$medium_count"
+          echo "::set-output name=hard::$hard_count"
+
+      - name: Update README
+        run: |
+          sed -i "s/Easy: \[.*\]/Easy: [${{ steps.count.outputs.easy }}]/" README.md
+          sed -i "s/Medium: \[.*\]/Medium: [${{ steps.count.outputs.medium }}]/" README.md
+          sed -i "s/Hard: \[.*\]/Hard: [${{ steps.count.outputs.hard }}]/" README.md
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add README.md
+          git commit -m "Update problem counts in README"
+          git push
+
