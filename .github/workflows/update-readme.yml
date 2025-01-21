@@ -19,15 +19,15 @@ jobs:
           easy_count=$(ls -1 Easy | wc -l || echo 0)
           medium_count=$(ls -1 Medium | wc -l || echo 0)
           hard_count=$(ls -1 Hard | wc -l || echo 0)
-          echo "::set-output name=easy::$easy_count"
-          echo "::set-output name=medium::$medium_count"
-          echo "::set-output name=hard::$hard_count"
+          echo "easy=$easy_count" >> $GITHUB_ENV
+          echo "medium=$medium_count" >> $GITHUB_ENV
+          echo "hard=$hard_count" >> $GITHUB_ENV
 
       - name: Update README
         run: |
-          sed -i "s/Easy: \[.*\]/Easy: [${{ steps.count.outputs.easy }}]/" README.md
-          sed -i "s/Medium: \[.*\]/Medium: [${{ steps.count.outputs.medium }}]/" README.md
-          sed -i "s/Hard: \[.*\]/Hard: [${{ steps.count.outputs.hard }}]/" README.md
+          sed -i "s/Easy: \[.*\]/Easy: [$easy]/" README.md
+          sed -i "s/Medium: \[.*\]/Medium: [$medium]/" README.md
+          sed -i "s/Hard: \[.*\]/Hard: [$hard]/" README.md
 
       - name: Commit and push changes
         run: |
@@ -36,4 +36,3 @@ jobs:
           git add README.md
           git commit -m "Update problem counts in README"
           git push
-
