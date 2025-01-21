@@ -10,34 +10,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Count problems
-        run: |
-          easy_count=$(ls -1 Easy 2>/dev/null | wc -l || echo 0)
-          medium_count=$(ls -1 Medium 2>/dev/null | wc -l || echo 0)
-          hard_count=$(ls -1 Hard 2>/dev/null | wc -l || echo 0)
-          echo "easy=$easy_count" >> $GITHUB_ENV
-          echo "medium=$medium_count" >> $GITHUB_ENV
-          echo "hard=$hard_count" >> $GITHUB_ENV
+    - name: Count problems
+      run: |
+        easy_count=$(ls -1 Easy 2>/dev/null | wc -l || echo 0)
+        medium_count=$(ls -1 Medium 2>/dev/null | wc -l || echo 0)
+        hard_count=$(ls -1 Hard 2>/dev/null | wc -l || echo 0)
+        echo "easy=$easy_count" >> $GITHUB_ENV
+        echo "medium=$medium_count" >> $GITHUB_ENV
+        echo "hard=$hard_count" >> $GITHUB_ENV
 
-      - name: Update README
-        run: |
-          sed -i "s/\*\*Easy\*\*: \[.*\]/**Easy**: [$easy]/" README.md
-          sed -i "s/\*\*Medium\*\*: \[.*\]/**Medium**: [$medium]/" README.md
-          sed -i "s/\*\*Hard\*\*: \[.*\]/**Hard**: [$hard]/" README.md
+    - name: Update README
+      run: |
+        sed -i "s/Easy: \[.*\]/Easy: [$easy]/" README.md
+        sed -i "s/Medium: \[.*\]/Medium: [$medium]/" README.md
+        sed -i "s/Hard: \[.*\]/Hard: [$hard]/" README.md
 
-      - name: Check for changes
-        id: changes
-        run: |
-          git diff-index --quiet HEAD || echo "changes_exist=true" >> $GITHUB_ENV
-
-      - name: Commit and push changes
-        if: env.changes_exist == 'true'
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git add README.md
-          git commit -m "Update problem counts in README"
-          git push
+    - name: Commit and push changes
+      env:
+        ACTIONS_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add README.md
+        git commit -m "Update problem counts in README"
+        git push https://${{ secrets.ACTIONS_TOKEN }}@github.com/${{ github.repository }} HEAD:main
