@@ -16,14 +16,18 @@ jobs:
       - name: Count problem files
         id: count
         run: |
-          easy_count=$(ls -1 Easy | wc -l || echo 0)
-          medium_count=$(ls -1 Medium | wc -l || echo 0)
-          hard_count=$(ls -1 Hard | wc -l || echo 0)
+          easy_count=$(ls -1 Easy 2>/dev/null | wc -l || echo 0)
+          medium_count=$(ls -1 Medium 2>/dev/null | wc -l || echo 0)
+          hard_count=$(ls -1 Hard 2>/dev/null | wc -l || echo 0)
           echo "easy=$easy_count" >> $GITHUB_ENV
           echo "medium=$medium_count" >> $GITHUB_ENV
           echo "hard=$hard_count" >> $GITHUB_ENV
 
       - name: Update README
+        env:
+          easy: ${{ env.easy }}
+          medium: ${{ env.medium }}
+          hard: ${{ env.hard }}
         run: |
           sed -i "s/Easy: \[.*\]/Easy: [$easy]/" README.md
           sed -i "s/Medium: \[.*\]/Medium: [$medium]/" README.md
