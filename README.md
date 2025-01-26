@@ -6,7 +6,7 @@ Purpose of the repo: share my code and document my progress.
 
 ## Problems Solved
 
-- **Easy**: [16]  <!-- Placeholder for Easy problems count -->
+- **Easy**: [17]  <!-- Placeholder for Easy problems count -->
 - **Medium**: [6] <!-- Placeholder for Medium problems count -->
 - **Hard**: [0]   <!-- Placeholder for Hard problems count -->
 
